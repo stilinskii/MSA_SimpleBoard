@@ -1,20 +1,30 @@
 package com.project.boardApp.api.data;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "attachment")
+@Getter
+@Setter
 public class Attachment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private Integer article_id;
+    @Column(nullable = false)
     private String location;
 
     @Column(name = "crated_datetime")
-    private LocalDateTime createdAt;
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "article_id")
+    private Article article;
+
 }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "board")
@@ -14,5 +15,9 @@ public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "board")
+    private List<Article> articles;
 }
