@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,6 +13,6 @@ public class ArticleDetailResponseModel {
 
     private String boardName;
     private String title;
-    private LocalDateTime createdAt;
-    private ArrayList<String> locations;
+    private Date createdAt;
+    private List<String> locations;
 }

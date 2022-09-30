@@ -12,6 +12,8 @@ public interface BoardService {
     List<ArticleListResponseModel> getArticles(String startDate,String endDate);
     ArticleDetailResponseModel saveArticle(CreateArticleRequestModel article);
     ArticleDetailResponseModel getArticle(Integer articleId);
+    List<ArticleListResponseModel> findArticlesByBoard(Integer BoardId);
+
     ArticleDetailResponseModel updateArticle(Integer articleId, UpdateArticleRequestModel article);
     void deleteArticle(Integer articleId);
 

@@ -1,15 +1,15 @@
 package com.project.boardApp.api.ui.model;
 
-import com.project.boardApp.api.data.Attachment;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
+@Getter
+@Setter
 public class CreateArticleRequestModel {
 
     private String boardName;
     private String title;
     private String content;
-    private LocalDateTime createdAt;
-    private ArrayList<Attachment> attachments;
+//    private LocalDateTime createdAt;
+//    private List<Attachment> attachments;
 }

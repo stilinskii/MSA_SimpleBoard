@@ -1,34 +1,56 @@
 package com.project.boardApp.api.ui.controllers;
 
+import com.project.boardApp.api.service.BoardService;
+import com.project.boardApp.api.ui.model.ArticleDetailResponseModel;
+import com.project.boardApp.api.ui.model.ArticleListResponseModel;
 import com.project.boardApp.api.ui.model.CreateArticleRequestModel;
 import com.project.boardApp.api.ui.model.UpdateArticleRequestModel;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/board")
+import java.util.List;
+
+@RequestMapping
 @RestController
+@RequiredArgsConstructor
 public class BoardController {
 
-    @GetMapping("/all")
-    public String getArticles(@RequestParam(required = false, name = "start-date") String startDate,
-                              @RequestParam(required = false, name = "end-date") String endDate){
-        //게시글 모두 가져오기 , 생성날짜 기준으로 게시글 가져오기
+    private final BoardService boardService;
 
+    @GetMapping("/articles")
+    public ResponseEntity<List<ArticleListResponseModel>> getArticles(@RequestParam(required = false, name = "start-date") String startDate,
+                                                                      @RequestParam(required = false, name = "end-date") String endDate){
+        List<ArticleListResponseModel> articles = boardService.getArticles(startDate, endDate);
 
-
-        //전체 검색.
-        return null;
+        return ResponseEntity.status(HttpStatus.OK).body(articles);
     }
 
-    @PostMapping
-    public String createArticle(CreateArticleRequestModel article){
-        //과제상에 파일 업로드 API는 없음으로 게시글 생성 시 목업 파일을 3개 씩 같이 생성한다. (location 필드는 가짜 데이터를 넣어도 무방)
-        return null;
+    @PostMapping(
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<ArticleDetailResponseModel> createArticle(@RequestBody CreateArticleRequestModel article){
+        ArticleDetailResponseModel articleDetailResponseModel = boardService.saveArticle(article);
+        return ResponseEntity.status(HttpStatus.CREATED).body(articleDetailResponseModel);
     }
 
-    @GetMapping("/{articleId}")
-    public String getArticle(@PathVariable Integer articleId){
+    @GetMapping("/article/{articleId}")
+    public ResponseEntity<ArticleDetailResponseModel> getArticles(@PathVariable Integer articleId){
+        ArticleDetailResponseModel article = boardService.getArticle(articleId);
+        if(article !=null){
+            return new ResponseEntity<>(article, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
 
-        return null;
+//고치기
+    @GetMapping(value = {"/board/{boardId}/","/board/{boardId}/{articleId}"})
+    public ResponseEntity<List<ArticleListResponseModel>> getArticlesByBoard(@PathVariable Integer boardId, @PathVariable(required = false) Integer articleId){
+        List<ArticleListResponseModel> articles = boardService.findArticlesByBoard(boardId);
+        return ResponseEntity.status(HttpStatus.OK).body(articles);
     }
 
     @PutMapping("/{articleId}")
@@ -40,7 +62,9 @@ public class BoardController {
     }
 
     @DeleteMapping("/{articleId}")
-    public String deleteArticle(@PathVariable Integer articleId){
-        return null;
+    public ResponseEntity deleteArticle(@PathVariable Integer articleId){
+        boardService.deleteArticle(articleId);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

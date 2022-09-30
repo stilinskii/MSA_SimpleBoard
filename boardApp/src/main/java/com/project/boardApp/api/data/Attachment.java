@@ -1,6 +1,7 @@
 package com.project.boardApp.api.data;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -11,7 +12,13 @@ import java.sql.Timestamp;
 @Table(name = "attachment")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Attachment {
+
+    public Attachment(String location, Article article) {
+        this.location = location;
+        this.article = article;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,11 +26,11 @@ public class Attachment {
     @Column(nullable = false)
     private String location;
 
-    @Column(name = "crated_datetime")
+    @Column(name = "crated_datetime",columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreationTimestamp
     private Timestamp createdAt;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "article_id")
     private Article article;
 

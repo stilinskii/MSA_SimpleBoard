@@ -4,10 +4,9 @@ package com.project.boardApp.api.data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +14,7 @@ import java.util.List;
 @Table(name = "article")
 @Getter
 @Setter
+@DynamicInsert
 public class Article {
 
     @Id
@@ -27,18 +27,20 @@ public class Article {
     @Column(nullable = false, columnDefinition = "Text")
     private String content;
 
-    @Column(name = "view_count", nullable = false)
+    @Column(name = "view_count", columnDefinition = "int default 0")
     private Integer viewCnt;
 
-    @Column(name = "crated_datetime", nullable = false,columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "crated_datetime", nullable = false, updatable = false)
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
+//    ,  updatable = false, insertable = false,
+//            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
     private Date createdAt;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Attachment> attachments;
 }

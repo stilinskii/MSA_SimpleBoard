@@ -12,6 +12,13 @@ import java.util.List;
 @Setter
 public class Board {
 
+    public Board() {
+    }
+
+    public Board(String name) {
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
