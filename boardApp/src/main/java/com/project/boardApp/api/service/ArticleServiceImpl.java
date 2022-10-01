@@ -1,6 +1,7 @@
 package com.project.boardApp.api.service;
 
 import com.project.boardApp.api.data.*;
+import com.project.boardApp.api.exception.ArticleNotFoundException;
 import com.project.boardApp.api.ui.model.ArticleDetailResponseModel;
 import com.project.boardApp.api.ui.model.ArticleListResponseModel;
 import com.project.boardApp.api.ui.model.CreateArticleRequestModel;
@@ -11,39 +12,27 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BoardServiceImpl implements BoardService{
+public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
     private final BoardRepository boardRepository;
-    private final AttachmentRepository attachmentRepository;
+
 
     @Override
-    public List<ArticleListResponseModel> getArticles(String startDate, String endDate) {
-        List<Article> articles = null;
-        if(startDate!=null){
-            if(endDate!=null){
-                //시작일 끝일 같이 검색
-            }else{
-                //시작일만 검색
-            }
-        }else if(endDate != null){
-            //끝일만 검색
+    public List<ArticleListResponseModel> getArticles(Date startDate, Date endDate, String boardName) {
+        List<Article> articles = articleRepository.findArticlesWithOptions(startDate, endDate, boardName);
 
-        }else{
-            articles = articleRepository.findAll();
-        }
-
-//        List<Article> articles = articleRepository.findAll();
-        List<ArticleListResponseModel> returnValue = getArticleListResponseModels(articles);
-
-        return returnValue;
+        return getArticleListResponseModels(articles);
     }
 
+    //TODO modelmapper들 정리
     private List<ArticleListResponseModel> getArticleListResponseModels(List<Article> articles) {
         List<ArticleListResponseModel> returnValue = new ArrayList<>();
 
@@ -80,13 +69,14 @@ public class BoardServiceImpl implements BoardService{
 
         Article savedArticle = articleRepository.save(article);
 
-        ArticleDetailResponseModel returnValue = getArticleDetailResponseModel(savedArticle, modelMapper);
+        ArticleDetailResponseModel returnValue = getArticleDetailResponseModel(savedArticle);
 
         return returnValue;
     }
 
 
-    private ArticleDetailResponseModel getArticleDetailResponseModel(Article article, ModelMapper modelMapper) {
+    private ArticleDetailResponseModel getArticleDetailResponseModel(Article article) {
+        ModelMapper modelMapper = new ModelMapper();
         ArticleDetailResponseModel articleDetail = modelMapper.map(article, ArticleDetailResponseModel.class);
         List<String> locations = article.getAttachments().stream().map(e -> e.getLocation()).collect(Collectors.toList());
 
@@ -106,9 +96,14 @@ public class BoardServiceImpl implements BoardService{
             return null;
         }
         //조회수 올리기
-        article.setViewCnt(article.getViewCnt()+1); // view count default 값이 안먹히고있음
+        addViewCnt(article);
+
+        return getArticleDetailResponseModel(article);
+    }
+
+    private void addViewCnt(Article article) {
+        article.setViewCnt(article.getViewCnt()+1);
         articleRepository.save(article);
-        return getArticleDetailResponseModel(article, new ModelMapper());
     }
 
     @Override
@@ -120,11 +115,19 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     public ArticleDetailResponseModel updateArticle(Integer articleId, UpdateArticleRequestModel article) {
-        return null;
+//        Article articleToBeUpdated = articleRepository.findById(articleId).orElseThrow(() -> new ArticleNotFoundException(articleId+"번 게시글이 존재하지 않습니다."));
+        Article articleToBeUpdated = articleRepository.findById(articleId).get();
+        articleToBeUpdated.setTitle(article.getTitle());
+        articleToBeUpdated.setContent(article.getContent());
+        Article updatedArticle = articleRepository.save(articleToBeUpdated);
+        return getArticleDetailResponseModel(updatedArticle);
     }
 
     @Override
     public void deleteArticle(Integer articleId) {
+//        articleRepository.findById(articleId).orElseThrow(() -> new ArticleNotFoundException(articleId+"번 게시글이 존재하지 않습니다."));
+
         articleRepository.deleteById(articleId);
+
     }
 }

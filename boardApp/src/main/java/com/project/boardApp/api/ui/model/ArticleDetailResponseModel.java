@@ -3,7 +3,6 @@ package com.project.boardApp.api.ui.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
