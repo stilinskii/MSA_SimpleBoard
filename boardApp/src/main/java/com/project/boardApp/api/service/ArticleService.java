@@ -13,7 +13,6 @@ public interface ArticleService {
     List<ArticleListResponseModel> getArticles(Date startDate, Date endDate, String boardName);
     ArticleDetailResponseModel saveArticle(CreateArticleRequestModel article);
     ArticleDetailResponseModel getArticle(Integer articleId);
-    List<ArticleListResponseModel> findArticlesByBoard(Integer BoardId);
 
     ArticleDetailResponseModel updateArticle(Integer articleId, UpdateArticleRequestModel article);
     void deleteArticle(Integer articleId);
