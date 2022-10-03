@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Table(name = "attachment")
@@ -21,14 +22,14 @@ public class Attachment {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(nullable = false)
     private String location;
 
     @Column(name = "crated_datetime",columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreationTimestamp
-    private Timestamp createdAt;
+    private Date createdAt;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "article_id")
