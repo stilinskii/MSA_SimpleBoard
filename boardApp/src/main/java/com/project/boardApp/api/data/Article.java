@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -31,11 +30,8 @@ public class Article {
     @Column(name = "view_count", columnDefinition = "int default 0")
     private Integer viewCnt;
 
-    @Column(name = "crated_datetime", nullable = false, updatable = false)
+    @Column(name = "crated_datetime", nullable = false, updatable = false,columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-//    ,  updatable = false, insertable = false,
-//            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
     private Date createdAt;
 
     @ManyToOne(cascade = CascadeType.ALL)

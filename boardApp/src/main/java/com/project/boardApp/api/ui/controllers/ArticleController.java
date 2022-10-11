@@ -35,7 +35,7 @@ public class ArticleController {
 
     @GetMapping
     public ResponseEntity<List<ArticleListResponseModel>> getArticles(
-                                                                      @Parameter(description = "검색 날짜 이후에 잘성된 글 조회", example = "2022-10-03")
+                                                                      @Parameter(description = "검색 날짜 이후에 작성된 글 조회", example = "2022-10-03")
                                                                       @RequestParam(required = false, name = "start-date") Date startDate,
                                                                       @Parameter(description = "검색 날짜 이전에 작성된 글 조회", example = "2022-10-04")
                                                                       @RequestParam(required = false, name = "end-date") Date endDate,
@@ -50,13 +50,12 @@ public class ArticleController {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<Object> createArticle(@Valid @RequestBody CreateArticleRequestModel article){
-        //TODO create 유효성검사
         ArticleDetailResponseModel articleDetailResponseModel = articleService.saveArticle(article);
         return ResponseEntity.status(HttpStatus.CREATED).body(articleDetailResponseModel);
     }
 
     @GetMapping("/{articleId}")
-    public ResponseEntity<ArticleDetailResponseModel> getArticles(@PathVariable Integer articleId){
+    public ResponseEntity<ArticleDetailResponseModel> getArticle(@PathVariable Integer articleId){
         ArticleDetailResponseModel article = articleService.getArticle(articleId);
         if(article !=null){
             return new ResponseEntity<>(article, HttpStatus.OK);
@@ -68,7 +67,6 @@ public class ArticleController {
 
     @PutMapping("/{articleId}")
     public ResponseEntity<ArticleDetailResponseModel> updateArticle(@PathVariable Integer articleId, @Valid @RequestBody UpdateArticleRequestModel article){
-        //TODO create 유효성검사
         ArticleDetailResponseModel updatedArticle = articleService.updateArticle(articleId, article);
 
         return new ResponseEntity<>(updatedArticle, HttpStatus.OK);

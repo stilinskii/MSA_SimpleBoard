@@ -1,21 +1,21 @@
 package com.project.boardApp.api.service;
 
-import com.project.boardApp.api.data.*;
-import com.project.boardApp.api.exception.ArticleNotFoundException;
+import com.project.boardApp.api.data.Article;
+import com.project.boardApp.api.data.repository.ArticleRepository;
+import com.project.boardApp.api.data.Attachment;
+import com.project.boardApp.api.data.Board;
 import com.project.boardApp.api.ui.model.ArticleDetailResponseModel;
 import com.project.boardApp.api.ui.model.ArticleListResponseModel;
 import com.project.boardApp.api.ui.model.CreateArticleRequestModel;
 import com.project.boardApp.api.ui.model.UpdateArticleRequestModel;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
